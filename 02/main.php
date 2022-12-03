@@ -26,22 +26,20 @@ enum Move: int {
     
     public function how_to_win(): Move
     {
-        return match($this)
-        {
-            Move::Rock => Move::Paper,
-            Move::Paper => Move::Scissors,
-            Move::Scissors => Move::Rock,
-        };
+        // to win, you need one above in the ranking
+        return Move::from(($this->value + 1) % 3);
     }
 
     public function how_to_lose(): Move
     {
-        return match($this)
-        {
-            Move::Rock => Move::Scissors,
-            Move::Paper => Move::Rock,
-            Move::Scissors => Move::Paper,
-        };
+        // to lose, you need one below in the ranking
+        // % returns a value with the same sign as the input, so we add 3 to keep this in range
+        return Move::from(($this->value -1 + 3) % 3);
+    }
+
+    public function difference(Move $other): int 
+    {
+        return ($this->value - $other->value + 3) % 3;
     }
 
 }
@@ -63,8 +61,10 @@ function letter_to_move ($letter) {
 function score($mine, $theirs) {
     global $WIN_SCORE, $DRAW_SCORE, $LOSE_SCORE;
 
-    if ($mine == $theirs) {
-        return $DRAW_SCORE;
+    
+    switch ($mine->difference($theirs)) {
+        case 0:
+            return $DRAW_SCORE;
     }
     
     switch ($mine) {
