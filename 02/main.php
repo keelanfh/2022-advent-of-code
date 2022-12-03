@@ -2,10 +2,10 @@
 
 require "helpers/helpers.php";
 
-enum Move {
-    case Rock;
-    case Paper;
-    case Scissors;
+enum Move: int {
+    case Rock = 1;
+    case Paper = 2;
+    case Scissors = 3;
 }
 
 function letter_to_move ($letter) {
@@ -53,7 +53,7 @@ function score($mine, $theirs) {
     }
 }
 
-$array = read_file_to_array("02/example.txt");
+$array = read_file_to_array("02/input.txt");
 
 $total_score = 0;
 
@@ -63,17 +63,7 @@ foreach($array as $line) {
     $theirs = letter_to_move($moves[0]);
     $mine = letter_to_move($moves[1]);
 
-    // Switch statement works in this case because Rock, Paper, Scissors worth 1 each
-    // I don't particularly like this approach
-    switch ($mine) {
-        case Move::Rock:
-            $total_score++;
-        case Move::Paper:
-            $total_score++;
-        case Move::Scissors:
-            $total_score++;
-    }
-
+    $total_score += $mine->value;
     $total_score += score($mine, $theirs);
 }
 
