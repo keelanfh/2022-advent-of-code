@@ -1,0 +1,9 @@
+{
+  "name": "keelanfh/2022-advent-of-code",
+  "description": "Advent of Code 2022 in PHP",
+  "license": "MIT",
+  "type": "project",
+  "require": {
+    "php": ">=8.0"
+    }
+}
