@@ -2,22 +2,18 @@
 
 require "helpers/helpers.php";
 
-$WIN_SCORE = 6;
-$DRAW_SCORE = 3;
-$LOSE_SCORE = 0;
-
-function move_to_value($move) {
-    $value = $move->value;
-    if ($value == 0) {
-        $value = 3;
-    }
-    return $value;
-}
-
 enum Move: int {
     case Rock = 1;
     case Paper = 2;
     case Scissors = 0;
+
+    public function value_123(): int {
+        $value = $this->value;
+        if ($value == 0) {
+            $value = 3;
+        }
+        return $value;
+    }
 
     public function how_to_draw(): Move
     {
@@ -59,40 +55,22 @@ function letter_to_move ($letter) {
 }
 
 function score($mine, $theirs) {
-    global $WIN_SCORE, $DRAW_SCORE, $LOSE_SCORE;
+    $WIN_SCORE = 6;
+    $DRAW_SCORE = 3;
+    $LOSE_SCORE = 0;
 
-    
     switch ($mine->difference($theirs)) {
         case 0:
             return $DRAW_SCORE;
-    }
-    
-    switch ($mine) {
-        case Move::Rock:
-            return match($theirs)
-                {
-                    Move::Scissors => $WIN_SCORE,
-                    Move::Paper => $LOSE_SCORE,
-                };
-
-        case Move::Paper:
-            return match($theirs)
-                {
-                    Move::Rock => $WIN_SCORE,
-                    Move::Scissors => $LOSE_SCORE,
-                };
-                
-        case Move::Scissors:
-            return match($theirs)
-                {
-                    Move::Paper => $WIN_SCORE,
-                    Move::Rock => $LOSE_SCORE,
-                };
+        case 1:
+            return $WIN_SCORE;
+        // 2 === -1 (mod 3)
+        case 2:
+            return $LOSE_SCORE;
     }
 }
 
 $array = read_file_to_array("02/input.txt");
-
 
 // Part 1
 $total_score = 0;
@@ -103,13 +81,11 @@ foreach($array as $line) {
     $theirs = letter_to_move($moves[0]);
     $mine = letter_to_move($moves[1]);
 
-    $total_score += move_to_value($mine);
+    $total_score += $mine->value_123();
     $total_score += score($mine, $theirs);
 }
 
 echo $total_score . "\n";
-
-$mine = 0;
 
 // Part 2
 $total_score = 0;
@@ -119,6 +95,7 @@ foreach($array as $line) {
 
     $theirs = letter_to_move($moves[0]);
 
+    // set my move to the right one
     $mine = match($moves[1])
         {
             "X" => $theirs->how_to_lose(),
@@ -126,7 +103,7 @@ foreach($array as $line) {
             "Z" => $theirs->how_to_win(),
         };
 
-    $total_score += move_to_value($mine);
+    $total_score += $mine->value_123();
     $total_score += score($mine, $theirs);
 
 }
