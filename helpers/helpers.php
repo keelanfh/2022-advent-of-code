@@ -33,12 +33,10 @@ function array_to_group_arrays($big_array, $delim_or_height, $to_int)
         }
 
         if ($to_int) {
-            $new_value = intval($value);
-        } else {
-            $new_value = $value;
+            $value = intval($value);
         }
 
-        array_push($small_array, $new_value);
+        array_push($small_array, $value);
         $row++;
     }
 
