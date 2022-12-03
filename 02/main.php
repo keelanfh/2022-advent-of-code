@@ -6,10 +6,18 @@ $WIN_SCORE = 6;
 $DRAW_SCORE = 3;
 $LOSE_SCORE = 0;
 
+function move_to_value($move) {
+    $value = $move->value;
+    if ($value == 0) {
+        $value = 3;
+    }
+    return $value;
+}
+
 enum Move: int {
     case Rock = 1;
     case Paper = 2;
-    case Scissors = 3;
+    case Scissors = 0;
 
     public function how_to_draw(): Move
     {
@@ -95,7 +103,7 @@ foreach($array as $line) {
     $theirs = letter_to_move($moves[0]);
     $mine = letter_to_move($moves[1]);
 
-    $total_score += $mine->value;
+    $total_score += move_to_value($mine);
     $total_score += score($mine, $theirs);
 }
 
@@ -118,7 +126,7 @@ foreach($array as $line) {
             "Z" => $theirs->how_to_win(),
         };
 
-    $total_score += $mine->value;
+    $total_score += move_to_value($mine);
     $total_score += score($mine, $theirs);
 
 }
