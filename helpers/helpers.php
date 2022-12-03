@@ -19,7 +19,7 @@ function array_to_group_arrays($big_array, $delim_or_height, $to_int)
     foreach ($big_array as $value) {
         // Arrange lines in groups of set length
         if (is_int($delim_or_height)) {
-            if (($row != 0) and (($row % 3) == 0)) {
+            if (($row != 0) and (($row % $delim_or_height) == 0)) {
                 array_push($output_array, $small_array);
                 $small_array = [];
             }
@@ -41,7 +41,7 @@ function array_to_group_arrays($big_array, $delim_or_height, $to_int)
         array_push($small_array, $new_value);
         $row++;
     }
-    
+
     // Remember to add the final small array to the big one
     array_push($output_array, $small_array);
     return $output_array;
