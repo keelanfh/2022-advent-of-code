@@ -9,52 +9,35 @@ $p2_total = 0;
 
 foreach ($lines as $line) {
     $areas = explode(",", $line);
-    $first = explode("-", $areas[0]);
-    $second = explode("-", $areas[1]);
+    
+    // split each area by -
+    $areas = array_map(fn($area) => explode("-", $area), $areas);
 
-    $first_from = intval($first[0]);
-    $first_to = intval($first[1]);
+    // convert everything to ints
+    array_walk_recursive($areas, "intval");
 
-    $second_from = intval($second[0]);
-    $second_to = intval($second[1]);
+    // sort by the first element of each subarray
+    usort($areas, fn($a, $b) => $a[0] <=> $b[0]);
 
-    // this will be positive if first starts to the right
-    // and negative if first starts to the left
-    // 0 when first and second start in the same place
-    $from_difference = $first_from - $second_from;
-
-    // now we just treat these three cases differently
-
-    // first starts to the left
-    if ($from_difference < 0){
-        if ($first_to >= $second_to){
-            $total++;
-        }
-        if ($first_to >= $second_from) {
-            $p2_total++;
-        }
-    }
-    // second starts to the left
-    elseif ($from_difference > 0){
-        if ($second_to >= $first_to){
-            $total++;
-        }
-        if ($second_to >= $first_from) {
-            $p2_total++;
-        }
-    }
-    // start in the same place
-    // one always contains the other
-    elseif ($from_difference == 0){
+    // special case where both start in the same place
+    // these always overlap
+    if ($areas[0][0] == $areas[1][0]) {
         $total++;
         $p2_total++;
-    }
 
+    } else {
+        // complete overlap
+        if ($areas[0][1] >= $areas[1][1]) {
+            $total++;
+        }
+
+        // partial overlap
+        if ($areas[0][1] >= $areas[1][0]) {
+            $p2_total++;
+        }
     }
+}
 
 
 echo $total . "\n";
 echo $p2_total . "\n";
-
-
-?>
