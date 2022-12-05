@@ -13,9 +13,6 @@ foreach ($lines as $line) {
     // split each area by -
     $areas = array_map(fn($area) => explode("-", $area), $areas);
 
-    // convert everything to ints
-    array_walk_recursive($areas, "intval");
-
     // sort by the first element of each subarray
     usort($areas, fn($a, $b) => $a[0] <=> $b[0]);
 
