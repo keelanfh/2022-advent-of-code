@@ -3,7 +3,7 @@
 function read_file_to_array($filepath)
 {
     // Open the file
-    $file = fopen($filepath, 'r'); 
+    $file = fopen($filepath, 'r');
 
     // Add each line to an array
     $array = explode("\n", fread($file, filesize($filepath)));
