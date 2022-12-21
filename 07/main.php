@@ -4,14 +4,13 @@ require("helpers/helpers.php");
 
 class FileOrFolder
 {
-    public string $name;
-    private ?Folder $parent;
+    private readonly ?Folder $parent;
 
-    // setting the parent
-    // we also add this to parent->children
-    public function setParent(?Folder $parent)
+    public function setParent(?Folder $parent) : void
     {
         $this->parent = $parent;
+
+        // if parent != null, add this to parent's children
         if (isset($this->parent)) {
             $this->parent->children[$this->name] = $this;
         }
@@ -22,9 +21,8 @@ class FileOrFolder
         return $this->parent;
     }
 
-    public function __construct(string $name, ?Folder $parent)
+    public function __construct(public readonly string $name, ?Folder $parent)
     {
-        $this->name = $name;
         $this->setParent($parent);
     }
 }
@@ -42,14 +40,14 @@ class Folder extends FileOrFolder
 
 class File extends FileOrFolder
 {
-    private int $size;
+    private readonly int $size;
 
     public function getSize() : int
     {
         return $this->size;
     }
 
-    public function setSize($size)
+    public function setSize($size) : void
     {
         $this->size = $size;
     }
@@ -64,23 +62,21 @@ class File extends FileOrFolder
 // going through the whole tree to get the size of each folder
 function getSizeOfAllChildren(Folder $folder)
 {
-    global $total_size;
-    global $space_required;
-    global $smallest_size;
+    global $sizeAllSmallFolders, $spaceRequired, $sizeSmallestFolderToDelete;
 
     foreach ($folder->children as $child) {
         if ($child instanceof Folder) {
-            $size = $child->getSize();
+            $sizeChild = $child->getSize();
 
             // part 1
-            if ($size <= 100000)
+            if ($sizeChild <= 100000)
             {
-                $total_size += $size;
+                $sizeAllSmallFolders += $sizeChild;
             }
 
             // part 2
-            if (($size >= $space_required) and ($size < $smallest_size)) {
-                $smallest_size = $size;
+            if (($sizeChild >= $spaceRequired) && ($sizeChild < $sizeSmallestFolderToDelete)) {
+                $sizeSmallestFolderToDelete = $sizeChild;
             }
 
             getSizeOfAllChildren($child);
@@ -90,65 +86,66 @@ function getSizeOfAllChildren(Folder $folder)
     }
 }
 
-function handle_cd(array $line_split, Folder $current) : Folder
+function handleCD(array $lineSplit, Folder $currentFolder) : Folder
 {
-    if ($line_split[2] == "/") {
-        return $current;
+    if ($lineSplit[2] == "/") {
+        return $currentFolder;
     }
-    if ($line_split[2] == "..") {
-        return $current->getParent();
+    if ($lineSplit[2] == "..") {
+        return $currentFolder->getParent();
     }
-    return $current->children[$line_split[2]];
+    return $currentFolder->children[$lineSplit[2]];
 }
 
-function handle_line(string $line, Folder $current) : Folder
+function handleLine(string $line, Folder $currentFolder) : Folder
 {
-    $line_split = explode(" ", $line);
+    $lineSplit = explode(" ", $line);
 
-    // commands run
-    if ($line_split[0] == "$") {
-        if ($line_split[1] == "cd") {
-            return handle_cd(line_split: $line_split, current: $current);
-        }
-        if ($line_split[1] == "ls") {
-            return $current;
-        }
+    // commands
+    if ($lineSplit[0] == "$") {
+        return match($lineSplit[1]) {
+            "cd" => handleCD(lineSplit: $lineSplit, currentFolder: $currentFolder),
+            "ls" => $currentFolder
+        };
     }
 
-    // directory appears
-    if ($line_split[0] == "dir")
+    // folder
+    if ($lineSplit[0] == "dir")
     {
-        $dir = new Folder(name: $line_split[1], parent: $current);
-        return $current;
+        new Folder(name: $lineSplit[1], parent: $currentFolder);
     }
 
-    // file appears
-    $file = new File(name: $line_split[1], parent: $current, size: $line_split[0]);
-    return $current;
+    // file
+    else
+    {
+        new File(name: $lineSplit[1], parent: $currentFolder, size: $lineSplit[0]);
+    }
+
+    return $currentFolder;
 }
 
 $lines = read_file_to_array("07/input.txt");
 
 $root = new Folder("/", null);
 
-$current = $root;
+$currentFolder = $root;
 
 foreach ($lines as $line) {
-    $current = handle_line(line: $line, current: $current);
+    $currentFolder = handleLine(line: $line, currentFolder: $currentFolder);
 }
 
 // part 1
-$total_size = 0;
+$sizeAllSmallFolders = 0;
 
 // part 2
-$root_size = $root->getSize();
-$space_required = $root_size - 40000000;
-$smallest_size = $root_size;
+$rootSize = $root->getSize();
+$spaceRequired = $rootSize - 40000000;
+$sizeSmallestFolderToDelete = $rootSize;
 
 getSizeOfAllChildren($root);
 
 // part 1
-echo $total_size . "\n";
+echo $sizeAllSmallFolders . "\n";
 
 // part 2
-echo $smallest_size . "\n";
+echo $sizeSmallestFolderToDelete . "\n";
