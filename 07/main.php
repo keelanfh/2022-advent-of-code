@@ -88,12 +88,12 @@ function getSizeOfAllChildren(Folder $folder)
     }
 }
 
-function handleCD(array $lineSplit, Folder $currentFolder) : Folder
+function handleCD(string $argument, Folder $currentFolder) : Folder
 {
-    return match($lineSplit[2]) {
+    return match($argument) {
         "/" => $currentFolder,
         ".." => $currentFolder->getParent(),
-        default => $currentFolder->children[$lineSplit[2]]
+        default => $currentFolder->children[$argument]
     };
 }
 
@@ -105,7 +105,7 @@ function handleLine(string $line, Folder $currentFolder) : Folder
         // commands
         case "$":
             return match($lineSplit[1]) {
-                "cd" => handleCD(lineSplit: $lineSplit, currentFolder: $currentFolder),
+                "cd" => handleCD(argument: $lineSplit[2], currentFolder: $currentFolder),
                 "ls" => $currentFolder
             };
 
@@ -130,9 +130,6 @@ $currentFolder = $root;
 foreach ($lines as $line) {
     $currentFolder = handleLine(line: $line, currentFolder: $currentFolder);
 }
-
-// part 1
-$sizeAllSmallFolders = 0;
 
 // part 2
 $rootSize = $root->getSize();
