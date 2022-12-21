@@ -9,19 +9,18 @@ $p2_total = 0;
 
 foreach ($lines as $line) {
     $areas = explode(",", $line);
-    
+
     // split each area by -
-    $areas = array_map(fn($area) => explode("-", $area), $areas);
+    $areas = array_map(fn ($area) => explode("-", $area), $areas);
 
     // sort by the first element of each subarray
-    usort($areas, fn($a, $b) => $a[0] <=> $b[0]);
+    usort($areas, fn ($a, $b) => $a[0] <=> $b[0]);
 
     // special case where both start in the same place
     // these always overlap
     if ($areas[0][0] == $areas[1][0]) {
         $total++;
         $p2_total++;
-
     } else {
         // complete overlap
         if ($areas[0][1] >= $areas[1][1]) {

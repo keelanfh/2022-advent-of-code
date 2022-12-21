@@ -2,12 +2,14 @@
 
 require_once("helpers/helpers.php");
 
-enum Move: int {
+enum Move: int
+{
     case Rock = 1;
     case Paper = 2;
     case Scissors = 0;
 
-    public function value123(): int {
+    public function value123(): int
+    {
         $value = $this->value;
         if ($value == 0) {
             $value = 3;
@@ -19,7 +21,7 @@ enum Move: int {
     {
         return $this;
     }
-    
+
     public function howToWin(): Move
     {
         // to win, you need one above in the ranking
@@ -30,14 +32,13 @@ enum Move: int {
     {
         // to lose, you need one below in the ranking
         // % returns a value with the same sign as the input, so we add 3 to keep this in range
-        return Move::from(($this->value -1 + 3) % 3);
+        return Move::from(($this->value - 1 + 3) % 3);
     }
 
     public function difference(Move $other): int
     {
         return ($this->value - $other->value + 3) % 3;
     }
-
 }
 
 function letterToMove($letter)
@@ -66,7 +67,7 @@ function score($mine, $theirs)
             return $DRAW_SCORE;
         case 1:
             return $WIN_SCORE;
-        // 2 === -1 (mod 3)
+            // 2 === -1 (mod 3)
         case 2:
             return $LOSE_SCORE;
     }
@@ -98,16 +99,14 @@ foreach ($array as $line) {
     $theirs = letterToMove($moves[0]);
 
     // set my move to the right one
-    $mine = match($moves[1])
-        {
-            "X" => $theirs->howToLose(),
-            "Y" => $theirs->howToDraw(),
-            "Z" => $theirs->howToWin(),
-        };
+    $mine = match ($moves[1]) {
+        "X" => $theirs->howToLose(),
+        "Y" => $theirs->howToDraw(),
+        "Z" => $theirs->howToWin(),
+    };
 
     $total_score += $mine->value123();
     $total_score += score($mine, $theirs);
-
 }
 
 println($total_score);

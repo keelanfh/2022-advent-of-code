@@ -6,7 +6,7 @@ class FileOrFolder
 {
     private readonly ?Folder $parent;
 
-    public function setParent(?Folder $parent) : void
+    public function setParent(?Folder $parent): void
     {
         $this->parent = $parent;
 
@@ -16,7 +16,7 @@ class FileOrFolder
         }
     }
 
-    public function getParent() : ?Folder
+    public function getParent(): ?Folder
     {
         return $this->parent;
     }
@@ -32,9 +32,9 @@ class Folder extends FileOrFolder
     public array $children = [];
 
     // recursively find the size of a folder, calling getSize on all children
-    public function getSize() : int
+    public function getSize(): int
     {
-        return array_sum(array_map(fn($a) => $a->getSize(), $this->children));
+        return array_sum(array_map(fn ($a) => $a->getSize(), $this->children));
     }
 }
 
@@ -42,12 +42,12 @@ class File extends FileOrFolder
 {
     private readonly int $size;
 
-    public function getSize() : int
+    public function getSize(): int
     {
         return $this->size;
     }
 
-    public function setSize($size) : void
+    public function setSize($size): void
     {
         $this->size = $size;
     }
@@ -75,50 +75,48 @@ function getSizeOfAllChildren(Folder $folder)
 
             // part 2
             if (($sizeChild >= $spaceRequired) &&
-                ($sizeChild < $sizeSmallestFolderToDelete)) {
+                ($sizeChild < $sizeSmallestFolderToDelete)
+            ) {
 
                 $sizeSmallestFolderToDelete = $sizeChild;
-
             }
 
             getSizeOfAllChildren($child);
         }
-
-        
     }
 }
 
-function handleCD(string $argument, Folder $currentFolder) : Folder
+function handleCD(string $argument, Folder $currentFolder): Folder
 {
-    return match($argument) {
+    return match ($argument) {
         "/" => $currentFolder,
         ".." => $currentFolder->getParent(),
         default => $currentFolder->children[$argument]
     };
 }
 
-function handleLine(string $line, Folder $currentFolder) : Folder
+function handleLine(string $line, Folder $currentFolder): Folder
 {
     $lineSplit = explode(" ", $line);
-    
+
     switch ($lineSplit[0]) {
-        // commands
+            // commands
         case "$":
-            return match($lineSplit[1]) {
+            return match ($lineSplit[1]) {
                 "cd" => handleCD(argument: $lineSplit[2], currentFolder: $currentFolder),
                 "ls" => $currentFolder
             };
 
-        // folder
+            // folder
         case "dir":
             new Folder(name: $lineSplit[1], parent: $currentFolder); // NOSONAR
             return $currentFolder;
 
-        // file
+            // file
         default:
             new File(name: $lineSplit[1], parent: $currentFolder, size: $lineSplit[0]); // NOSONAR
             return $currentFolder;
-        }
+    }
 }
 
 $lines = read_file_to_array("07/input.txt");

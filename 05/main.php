@@ -11,16 +11,16 @@ $moves = $lines[1];
 // remove the last, useless element
 array_pop($stacks);
 
-$stacks = array_map(fn($line) => str_split($line, 4), $stacks);
+$stacks = array_map(fn ($line) => str_split($line, 4), $stacks);
 
 $stacks_nobrackets = [];
 foreach ($stacks as $stack) {
-    array_push($stacks_nobrackets, array_map(fn($line) => str_replace(["[", "]"], "", $line), $stack));
+    array_push($stacks_nobrackets, array_map(fn ($line) => str_replace(["[", "]"], "", $line), $stack));
 }
 
 function cleanStack($stack)
 {
-    $stack = array_map(fn($a) => str_replace(" ", "", $a), $stack);
+    $stack = array_map(fn ($a) => str_replace(" ", "", $a), $stack);
     // this will just remove falsy values
     $stack = array_filter($stack);
     $stack = array_reverse($stack);
@@ -47,8 +47,8 @@ $stacks_2 = $stacks;
 
 // moving - part 1
 foreach ($moves_data as $move_data) {
-    for ($submove=0; $submove < $move_data[0]; $submove++) {
-        array_push($stacks[$move_data[2]-1], array_pop($stacks[$move_data[1] -1]));
+    for ($submove = 0; $submove < $move_data[0]; $submove++) {
+        array_push($stacks[$move_data[2] - 1], array_pop($stacks[$move_data[1] - 1]));
     }
 }
 
@@ -59,10 +59,10 @@ $stacks = $stacks_2;
 
 foreach ($moves_data as $move_data) {
     $temp_array = [];
-    for ($submove=0; $submove < $move_data[0]; $submove++) {
-        array_push($temp_array, array_pop($stacks[$move_data[1]-1]));
+    for ($submove = 0; $submove < $move_data[0]; $submove++) {
+        array_push($temp_array, array_pop($stacks[$move_data[1] - 1]));
     }
-    array_push($stacks[$move_data[2]-1], ...array_reverse($temp_array));
+    array_push($stacks[$move_data[2] - 1], ...array_reverse($temp_array));
 }
 
 println(implode(array_map("array_pop", $stacks)));

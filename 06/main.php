@@ -12,8 +12,8 @@ $datastream = str_split($datastream);
 
 function findFirstUnique($array, $length): int
 {
-    for ($i=$length; $i < count($array) + 1; $i++) {
-        if (count(array_unique(array_slice($array, $i-$length, $length))) == $length) {
+    for ($i = $length; $i < count($array) + 1; $i++) {
+        if (count(array_unique(array_slice($array, $i - $length, $length))) == $length) {
             return $i;
         }
     }
