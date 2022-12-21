@@ -1,6 +1,6 @@
 <?php
 
-require("helpers/helpers.php");
+require_once("helpers/helpers.php");
 
 class FileOrFolder
 {
@@ -111,12 +111,12 @@ function handleLine(string $line, Folder $currentFolder) : Folder
 
         // folder
         case "dir":
-            new Folder(name: $lineSplit[1], parent: $currentFolder);
+            new Folder(name: $lineSplit[1], parent: $currentFolder); // NOSONAR
             return $currentFolder;
 
         // file
         default:
-            new File(name: $lineSplit[1], parent: $currentFolder, size: $lineSplit[0]);
+            new File(name: $lineSplit[1], parent: $currentFolder, size: $lineSplit[0]); // NOSONAR
             return $currentFolder;
         }
 }

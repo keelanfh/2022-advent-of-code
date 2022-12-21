@@ -1,6 +1,6 @@
 <?php
 
-require("helpers/helpers.php");
+require_once("helpers/helpers.php");
 
 $lines = read_file_to_array("05/input.txt");
 $lines = array_to_group_arrays($lines, "", false);
@@ -18,7 +18,8 @@ foreach ($stacks as $stack) {
     array_push($stacks_nobrackets, array_map(fn($line) => str_replace(["[", "]"], "", $line), $stack));
 }
 
-function clean_stack($stack) {
+function cleanStack($stack)
+{
     $stack = array_map(fn($a) => str_replace(" ", "", $a), $stack);
     // this will just remove falsy values
     $stack = array_filter($stack);
@@ -29,16 +30,17 @@ function clean_stack($stack) {
 // transposes the array
 // it isn't clear to me why this is the syntax for this...
 $stacks = array_map(null, ...$stacks_nobrackets);
-$stacks = array_map("clean_stack", $stacks);
+$stacks = array_map("cleanStack", $stacks);
 
 // now for the moves
-function move_to_movedata($line) {
+function moveToMoveData($line)
+{
     $matches = [];
     preg_match("/^move (\d{1,2}) from (\d) to (\d)$/", $line, $matches);
     return array_slice($matches, 1);
 }
 
-$moves_data = array_map("move_to_movedata", $moves);
+$moves_data = array_map("moveToMoveData", $moves);
 
 // make a copy for part 2
 $stacks_2 = $stacks;

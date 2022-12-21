@@ -1,6 +1,6 @@
 <?php
 
-require("helpers/helpers.php");
+require_once("helpers/helpers.php");
 
 $lines = read_file_to_array("04/input.txt");
 

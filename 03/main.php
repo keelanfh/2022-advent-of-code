@@ -1,13 +1,14 @@
 <?php
 
-require("helpers/helpers.php");
+require_once("helpers/helpers.php");
 
-function letter_to_priority ($letter) {
+function letterToPriority($letter)
+    {
     $value = ord($letter) - 96;
 
     if ($value < 0) {
         $value += 58;
-    } 
+    }
 
     return $value;
 
@@ -19,7 +20,7 @@ $total = 0;
 
 // Part 1
 
-foreach($lines as $line) {
+foreach ($lines as $line) {
     $split_point=strlen($line)/2;
 
     $left=str_split(substr($line,0,$split_point));
@@ -27,7 +28,7 @@ foreach($lines as $line) {
 
     $shared = array_values(array_intersect($left, $right))[0];
 
-    $total += letter_to_priority($shared);
+    $total += letterToPriority($shared);
 
 }
 
@@ -43,7 +44,7 @@ foreach ($grouped_lines as $group_str) {
     $group_arrays = array_map("str_split", $group_str);
 
     $shared = array_values(array_intersect(...$group_arrays))[0];
-    $total += letter_to_priority($shared);
+    $total += letterToPriority($shared);
  
 }
 

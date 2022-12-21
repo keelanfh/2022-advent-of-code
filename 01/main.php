@@ -1,6 +1,6 @@
 <?php
 
-require "helpers/helpers.php";
+require_once "helpers/helpers.php";
 
 $big_array = read_file_to_int_groups("01/input.txt");
 
@@ -13,4 +13,3 @@ println($sums[0]);
 
 # Part 2
 println(array_sum(array_slice($sums, 0, 3)));
-
