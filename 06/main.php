@@ -1,5 +1,7 @@
 <?php
 
+require "helpers/helpers.php";
+
 $filepath = "06/input.txt";
 
 // Open the file
@@ -16,6 +18,6 @@ function find_first_unique($array, $length): int {
     }
 }
 
-echo find_first_unique($datastream, 4) . "\n";
-echo find_first_unique($datastream, 14) . "\n";
+println(find_first_unique($datastream, 4));
+println(find_first_unique($datastream, 14));
 

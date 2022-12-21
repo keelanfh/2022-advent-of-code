@@ -50,7 +50,7 @@ foreach ($moves_data as $move_data) {
     }
 }
 
-echo implode(array_map("array_pop", $stacks)) . "\n";
+println(implode(array_map("array_pop", $stacks)));
 
 // moving - part 2
 $stacks = $stacks_2;
@@ -63,4 +63,4 @@ foreach ($moves_data as $move_data) {
     array_push($stacks[$move_data[2]-1], ...array_reverse($temp_array));
 }
 
-echo implode(array_map("array_pop", $stacks)) . "\n";
+println(implode(array_map("array_pop", $stacks)));

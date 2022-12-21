@@ -31,7 +31,7 @@ foreach($lines as $line) {
 
 }
 
-echo $total . "\n";
+println($total);
 
 // Part 2
 
@@ -47,6 +47,4 @@ foreach ($grouped_lines as $group_str) {
  
 }
 
-echo $total . "\n";
-
-?>
+println($total);

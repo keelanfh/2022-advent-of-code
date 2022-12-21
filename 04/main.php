@@ -36,5 +36,5 @@ foreach ($lines as $line) {
 }
 
 
-echo $total . "\n";
-echo $p2_total . "\n";
+println($total);
+println($p2_total);

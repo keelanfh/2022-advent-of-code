@@ -85,7 +85,7 @@ foreach($array as $line) {
     $total_score += score($mine, $theirs);
 }
 
-echo $total_score . "\n";
+println($total_score);
 
 // Part 2
 $total_score = 0;
@@ -108,6 +108,6 @@ foreach($array as $line) {
 
 }
 
-echo $total_score . "\n";
+println($total_score);
 
 ?>
