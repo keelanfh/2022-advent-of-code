@@ -16,7 +16,7 @@ class FileOrFolder
         }
     }
 
-    public function getParent() : Folder
+    public function getParent() : ?Folder
     {
         return $this->parent;
     }
@@ -69,14 +69,16 @@ function getSizeOfAllChildren(Folder $folder)
             $sizeChild = $child->getSize();
 
             // part 1
-            if ($sizeChild <= 100000)
-            {
+            if ($sizeChild <= 100000) {
                 $sizeAllSmallFolders += $sizeChild;
             }
 
             // part 2
-            if (($sizeChild >= $spaceRequired) && ($sizeChild < $sizeSmallestFolderToDelete)) {
+            if (($sizeChild >= $spaceRequired) &&
+                ($sizeChild < $sizeSmallestFolderToDelete)) {
+
                 $sizeSmallestFolderToDelete = $sizeChild;
+
             }
 
             getSizeOfAllChildren($child);
@@ -88,40 +90,35 @@ function getSizeOfAllChildren(Folder $folder)
 
 function handleCD(array $lineSplit, Folder $currentFolder) : Folder
 {
-    if ($lineSplit[2] == "/") {
-        return $currentFolder;
-    }
-    if ($lineSplit[2] == "..") {
-        return $currentFolder->getParent();
-    }
-    return $currentFolder->children[$lineSplit[2]];
+    return match($lineSplit[2]) {
+        "/" => $currentFolder,
+        ".." => $currentFolder->getParent(),
+        default => $currentFolder->children[$lineSplit[2]]
+    };
 }
 
 function handleLine(string $line, Folder $currentFolder) : Folder
 {
     $lineSplit = explode(" ", $line);
+    
+    switch ($lineSplit[0]) {
+        // commands
+        case "$":
+            return match($lineSplit[1]) {
+                "cd" => handleCD(lineSplit: $lineSplit, currentFolder: $currentFolder),
+                "ls" => $currentFolder
+            };
 
-    // commands
-    if ($lineSplit[0] == "$") {
-        return match($lineSplit[1]) {
-            "cd" => handleCD(lineSplit: $lineSplit, currentFolder: $currentFolder),
-            "ls" => $currentFolder
-        };
-    }
+        // folder
+        case "dir":
+            new Folder(name: $lineSplit[1], parent: $currentFolder);
+            return $currentFolder;
 
-    // folder
-    if ($lineSplit[0] == "dir")
-    {
-        new Folder(name: $lineSplit[1], parent: $currentFolder);
-    }
-
-    // file
-    else
-    {
-        new File(name: $lineSplit[1], parent: $currentFolder, size: $lineSplit[0]);
-    }
-
-    return $currentFolder;
+        // file
+        default:
+            new File(name: $lineSplit[1], parent: $currentFolder, size: $lineSplit[0]);
+            return $currentFolder;
+        }
 }
 
 $lines = read_file_to_array("07/input.txt");
@@ -145,7 +142,7 @@ $sizeSmallestFolderToDelete = $rootSize;
 getSizeOfAllChildren($root);
 
 // part 1
-echo $sizeAllSmallFolders . "\n";
+println($sizeAllSmallFolders);
 
 // part 2
-echo $sizeSmallestFolderToDelete . "\n";
+println($sizeSmallestFolderToDelete);

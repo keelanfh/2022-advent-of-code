@@ -50,4 +50,8 @@ function read_file_to_int_groups($filepath) {
     return array_to_group_arrays($big_array, "", true);
 }
 
+function println($string) {
+    echo $string . PHP_EOL;
+}
+
 ?>
