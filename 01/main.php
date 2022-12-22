@@ -2,7 +2,8 @@
 
 require_once "helpers/helpers.php";
 
-$big_array = read_file_to_int_groups("01/input.txt");
+$contents = readFileToString("01/input.txt");
+$big_array = stringSplit($contents, "\n\n", "\n");
 
 $sums = array_map("array_sum", $big_array);
 

@@ -2,8 +2,8 @@
 
 require_once("helpers/helpers.php");
 
-$lines = read_file_to_array("05/input.txt");
-$lines = array_to_group_arrays($lines, "", false);
+$lines = readFileToString("05/input.txt");
+$lines = stringSplit($lines, "\n\n", "\n");
 
 $stacks = $lines[0];
 $moves = $lines[1];

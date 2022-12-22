@@ -36,7 +36,7 @@ println($total);
 
 $total = 0;
 
-$grouped_lines  = array_to_group_arrays($lines, 3, false);
+$grouped_lines = array_chunk($lines, 3);
 
 foreach ($grouped_lines as $group_str) {
     $group_arrays = array_map("str_split", $group_str);
